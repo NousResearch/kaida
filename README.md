@@ -20,6 +20,7 @@ This document introduces Kaida incrementally through practical examples.
 
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Example Project](#example-project)
 - [Motivation: Why Use Kaida?](#motivation-why-use-kaida)
 - [Typed Feature Flags and Fail-Fast](#typed-feature-flags-and-fail-fast)
 - [Templates for Structured Prompts](#templates-for-structured-prompts)
@@ -73,6 +74,10 @@ Kaida uses YAML to configure model details and authentication separately:
     temperature: 1.2
     top_p: 0.95
 ```
+
+## Example Project
+
+If you want to get a quick start, you can find a practical example using Kaida [here](https://github.com/NousResearch/kaida-gencritique)!
 
 ## Motivation: Why Use Kaida?
 
