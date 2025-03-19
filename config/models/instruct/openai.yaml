@@ -1,0 +1,30 @@
+- name: "openai_gpt4o"
+  auth: "openai"
+  model:
+    type: "openai"
+    model: "gpt-4o-2024-08-06"
+- name: "openai_gpt4o-mini"
+  auth: "openai"
+  model:
+    type: "openai"
+    model: "gpt-4o-mini-2024-07-18"
+- name: "openai_o3-mini"
+  auth: "openai"
+  model:
+    type: "openai"
+    model: "o3-mini-2025-01-31"
+- name: "openai_gpt-4.5"
+  auth: "openai"
+  model:
+    type: "openai"
+    model: "gpt-4.5-preview-2025-02-27"
+- name: "openai_gpt4"
+  auth: "openai"
+  model:
+    type: "openai"
+    model: "gpt-4-0613"
+- name: "openai_chatgpt-4o"
+  auth: "openai"
+  model:
+    type: "openai"
+    model: "chatgpt-4o-latest"
