@@ -12,7 +12,7 @@ import java.nio.file.Path
 import java.util.UUID
 
 interface PipelineContextSerializer {
-	fun serializeStep(runId: String, pipeline: Pipeline, step: Step, ctx: PipelineContextSourceTracked)
+	fun serializeKeys(runId: String, pipeline: Pipeline, keys: Set<Key<*>>, ctx: PipelineContextSourceTracked)
 	fun loadContextForPipeline(
 		runId: String,
 		pipeline: Pipeline,
@@ -22,9 +22,7 @@ interface PipelineContextSerializer {
 	): PipelineContextSourceTracked?
 
 	fun serializePipeline(runId: String, pipeline: Pipeline, ctx: PipelineContextSourceTracked) {
-		for(step in pipeline.steps) {
-			serializeStep(runId, pipeline, step, ctx)
-		}
+		serializeKeys(runId, pipeline, pipeline.steps.flatMap { it.produces + it.consumes }.toSet(), ctx)
 	}
 }
 
@@ -70,10 +68,10 @@ class FilesystemDB(private val maker: DBMaker.Maker) : PipelineContextSerializer
 		"historicalMap", Serializer.STRING, Serializer.STRING
 	).createOrOpen()
 
-	override fun serializeStep(
+	override fun serializeKeys(
 		runId: String,
 		pipeline: Pipeline,
-		step: Step,
+		keys: Set<Key<*>>,
 		ctx: PipelineContextSourceTracked,
 	) {
 		// TODO: this is not safe. not monotonic, not guaranteed to be correct
@@ -81,7 +79,7 @@ class FilesystemDB(private val maker: DBMaker.Maker) : PipelineContextSerializer
 		//       compared to the most recent entry in historicalMap
 		val currentTime = System.currentTimeMillis()
 
-		for (varkey in step.produces) {
+		for (varkey in keys) {
 			val tracked = ctx.getTrackedOrNull(varkey)
 				?: continue
 
@@ -107,6 +105,13 @@ class FilesystemDB(private val maker: DBMaker.Maker) : PipelineContextSerializer
 		}
 
 		db.commit()
+	}
+
+	fun getAllRunIDsForPipeline(pipeline: Pipeline): Set<String> {
+		val reg = Regex("""^([^|]+)\|""" + pipeline.id)
+		return latestMap.keys
+			.mapNotNull { reg.find(it)?.groupValues[1] }
+			.toSet()
 	}
 
 	override fun loadContextForPipeline(
